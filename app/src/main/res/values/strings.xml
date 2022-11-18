@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">DAA-lab3</string>
+
+    <string name="menu_sort">Trier par</string>
+    <string name="menu_sort_creation_date">Date de création</string>
+    <string name="menu_sort_eta">A venir</string>
+    <string name="menu_generate">Générer une note</string>
+    <string name="menu_delete_all">Tout supprimer</string>
 </resources>
