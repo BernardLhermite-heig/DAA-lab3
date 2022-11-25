@@ -69,9 +69,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nb_notes"
+        android:textSize="50sp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/menu_generate"
         />
 
@@ -83,8 +84,8 @@
         android:text="@string/menu_generate"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nb_notes"
-        app:layout_constraintBottom_toTopOf="@id/menu_delete_all"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         />
 
     <Button
@@ -92,10 +93,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/menu_delete_all"
+        android:layout_marginTop="50dp"
         app:layout_constraintStart_toEndOf="@id/guideline"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/nb_notes"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/menu_generate"
+        />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
