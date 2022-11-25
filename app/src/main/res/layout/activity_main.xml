@@ -1,60 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginStart="4dp"
     android:layout_marginEnd="8dp"
     tools:context=".MainActivity">
+<!--
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_notes"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/notes"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/main_icon1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/shopping"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"/>
 
-    <TextView
-        android:id="@+id/note_title1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/note_title"
-        app:layout_constraintStart_toEndOf="@id/main_icon1"
-        app:layout_constraintTop_toTopOf="@id/main_icon1" />
-
-    <TextView
-        android:id="@+id/note_content1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/note_content"
-        app:layout_constraintStart_toEndOf="@id/main_icon1"
-        app:layout_constraintBottom_toBottomOf="@id/main_icon1" />
-
-    <ImageView
-        android:id="@+id/late_icon1"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/clock"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/main_icon1"/>
-
-    <TextView
-        android:id="@+id/is_late1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/isLate"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/main_icon1" />
-
+    </androidx.fragment.app.FragmentContainerView>
+-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
