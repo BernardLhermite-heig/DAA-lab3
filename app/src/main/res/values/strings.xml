@@ -11,4 +11,6 @@
     <string name="menu_sort_eta">A venir</string>
     <string name="menu_generate">Générer une note</string>
     <string name="menu_delete_all">Tout supprimer</string>
+
+    <string name="nb_notes">11</string>
 </resources>
