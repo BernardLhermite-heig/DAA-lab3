@@ -30,4 +30,10 @@ class DataRepository(
             insert(note, schedule)
         }
     }
+
+    fun deleteAllNotes() {
+        applicationScope.launch {
+            noteDAO.deleteAllNotes()
+        }
+    }
 }

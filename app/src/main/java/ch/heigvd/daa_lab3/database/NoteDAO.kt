@@ -23,4 +23,7 @@ interface NoteDAO {
     @Transaction
     @Query("SELECT * FROM Note")
     fun getAllNotes(): LiveData<List<NoteAndSchedule>>
+
+    @Query("DELETE FROM Note")
+    fun deleteAllNotes()
 }
