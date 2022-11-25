@@ -8,8 +8,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import ch.heigvd.daa_lab3.models.Note
 import ch.heigvd.daa_lab3.models.Schedule
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlin.concurrent.thread
 
 @Database(
     entities = [Note::class, Schedule::class],
@@ -41,17 +40,20 @@ abstract class MyDatabase : RoomDatabase() {
             return object : Callback() {
                 override fun onCreate(db: SupportSQLiteDatabase) {
                     INSTANCE?.let { database ->
-                        val noteDAO = database.noteDAO()
-                        val isEmpty = noteDAO.getCount().value == 0L
 
-                        if (isEmpty) {
-                            val repository =
-                                DataRepository(noteDAO, CoroutineScope(SupervisorJob()))
-
+                        thread {
                             repeat(NB_NOTES) {
-                                repository.insertRandomNote()
+                                val note = Note.generateRandomNote()
+                                val schedule = Note.generateRandomSchedule()
+
+                                val noteId = database.noteDAO().insert(note)
+                                if (schedule != null) {
+                                    schedule.ownerId = noteId
+                                    database.noteDAO().insert(schedule)
+                                }
                             }
                         }
+
                     }
                 }
             }
