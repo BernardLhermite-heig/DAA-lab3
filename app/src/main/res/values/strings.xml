@@ -6,7 +6,7 @@
     <string name="note_content">Contenu de la note</string>
     <string name="isLate">Late</string>
 
-    <string name="menu_sort">Trier par</string>
+    <string name="menu_sort">Trier</string>
     <string name="menu_sort_creation_date">Date de création</string>
     <string name="menu_sort_eta">A venir</string>
     <string name="menu_generate">Générer une note</string>
