@@ -46,3 +46,7 @@ dependencies {
     ksp 'androidx.room:room-compiler:2.4.3'
     androidTestImplementation 'androidx.room:room-testing:2.4.3'
 }
+
+ksp {
+    arg("room.schemaLocation","$projectDir/schemas".toString())
+}
