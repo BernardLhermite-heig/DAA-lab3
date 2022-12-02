@@ -9,7 +9,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/title"
+        android:id="@+id/notes_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/notes"
@@ -21,83 +21,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.69"
-        />
-
-    <ImageView
-        android:id="@+id/main_icon1"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/shopping"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title"/>
-
-    <TextView
-        android:id="@+id/note_title1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/note_title"
-        app:layout_constraintStart_toEndOf="@id/main_icon1"
-        app:layout_constraintTop_toTopOf="@id/main_icon1" />
-
-    <TextView
-        android:id="@+id/note_content1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/note_content"
-        app:layout_constraintStart_toEndOf="@id/main_icon1"
-        app:layout_constraintBottom_toBottomOf="@id/main_icon1" />
-
-    <ImageView
-        android:id="@+id/late_icon1"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:src="@drawable/clock"
-        app:layout_constraintEnd_toStartOf="@id/guideline"
-        app:layout_constraintTop_toTopOf="@id/main_icon1"/>
-
-    <TextView
-        android:id="@+id/is_late1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/isLate"
-        app:layout_constraintEnd_toEndOf="@id/guideline"
-        app:layout_constraintBottom_toBottomOf="@id/main_icon1" />
+        app:layout_constraintGuide_percent="0.69" />
 
     <TextView
         android:id="@+id/nb_notes"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:text="@string/nb_notes"
         android:textSize="50sp"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintBottom_toTopOf="@id/generate_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/menu_generate"
-        />
+        app:layout_constraintStart_toEndOf="@id/guideline" />
 
 
     <Button
-        android:id="@+id/menu_generate"
+        android:id="@+id/generate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/menu_generate"
-        app:layout_constraintStart_toEndOf="@id/guideline"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/menu_delete_all"
+        android:id="@+id/delete_all_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/menu_delete_all"
         android:layout_marginTop="50dp"
-        app:layout_constraintStart_toEndOf="@id/guideline"
+        android:text="@string/menu_delete_all"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/menu_generate"
-        />
+        app:layout_constraintStart_toEndOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@id/generate_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
