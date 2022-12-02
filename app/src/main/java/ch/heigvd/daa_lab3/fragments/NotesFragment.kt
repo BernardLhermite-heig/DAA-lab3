@@ -15,6 +15,7 @@ import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
 import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
 class NotesFragment : Fragment() {
+    private val notesAdapter: NotesAdapter by lazy { NotesAdapter() }
     private val viewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory((requireActivity().application as MyApp).repository)
     }
@@ -30,14 +31,21 @@ class NotesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = NotesAdapter()
         view.findViewById<RecyclerView>(R.id.notes_list).apply {
-            this.adapter = adapter
+            adapter = notesAdapter
             layoutManager = LinearLayoutManager(context)
         }
 
         viewModel.allNotes.observe(viewLifecycleOwner) { notes ->
-            adapter.items = notes
+            notesAdapter.items = notes
         }
+    }
+
+    fun sortByEta() {
+        notesAdapter.currentSortType = NotesAdapter.SortType.ETA
+    }
+
+    fun sortByCreationDate() {
+        notesAdapter.currentSortType = NotesAdapter.SortType.CREATION_DATE
     }
 }

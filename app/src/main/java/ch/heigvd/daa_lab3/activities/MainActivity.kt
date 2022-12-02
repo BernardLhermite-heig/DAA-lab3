@@ -12,6 +12,7 @@ import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
 import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
 class MainActivity : AppCompatActivity() {
+    private val notesFragment: NotesFragment by lazy { NotesFragment() }
     private val myViewModel: NotesViewModel by viewModels {
         NotesViewModelFactory((application as MyApp).repository)
     }
@@ -21,7 +22,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         supportFragmentManager.beginTransaction()
-            .replace(R.id.notes_fragment, NotesFragment())
+            .replace(R.id.notes_fragment, notesFragment)
             .commit()
     }
 
@@ -41,11 +42,11 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.menu_sort_eta -> {
-//                myViewModel.()
+                notesFragment.sortByEta()
                 true
             }
             R.id.menu_sort_creation_date -> {
-//                myViewModel.sortByCreationDate()
+                notesFragment.sortByCreationDate()
                 true
             }
             else -> super.onOptionsItemSelected(item)
