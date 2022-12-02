@@ -38,9 +38,11 @@ abstract class MyDatabase : RoomDatabase() {
 
         private fun populateCallBack(): Callback {
             return object : Callback() {
-                override fun onCreate(db: SupportSQLiteDatabase) {
+                override fun onOpen(db: SupportSQLiteDatabase) {
                     INSTANCE?.let { database ->
-
+                        if (db.query("SELECT * FROM Note").count > 0) {
+                            return
+                        }
                         thread {
                             repeat(NB_NOTES) {
                                 val note = Note.generateRandomNote()
@@ -53,7 +55,6 @@ abstract class MyDatabase : RoomDatabase() {
                                 }
                             }
                         }
-
                     }
                 }
             }
