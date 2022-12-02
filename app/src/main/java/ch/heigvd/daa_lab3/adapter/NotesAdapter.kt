@@ -12,6 +12,9 @@ import ch.heigvd.daa_lab3.R
 import ch.heigvd.daa_lab3.models.NoteAndSchedule
 import ch.heigvd.daa_lab3.models.State
 import ch.heigvd.daa_lab3.models.Type
+import java.time.LocalDateTime
+import java.time.temporal.ChronoUnit
+import java.util.*
 
 class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
@@ -84,16 +87,23 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
             content.text = note.text
 
             if (schedule != null) {
-                //TODO difference
-//                Calendar.getInstance().min
-//                val difference = LocalDate.now().until(LocalDate.from(schedule.date.toInstant()))
-                scheduleText.text = schedule.date.toString()
+                val today = LocalDateTime.now()
+                val date = LocalDateTime.ofInstant(schedule.date.toInstant(), TimeZone.getDefault().toZoneId())
+                val diff: Long = ChronoUnit.MONTHS.between(today, date)
+
+                //val difference = Calendar.getInstance().timeInMillis - schedule.date.timeInMillis
+                //scheduleText.text = difference.milliseconds.inWholeDays.toString() + " days"
+
+                scheduleText.text = diff.toString() + " months"
                 scheduleIcon.setColorFilter(
                     when (true) {
                         true -> Color.RED
                         else -> Color.GRAY
                     }
                 )
+            }else{
+                //scheduleText.text = "null"
+                scheduleIcon.setColorFilter(Color.GREEN)
             }
         }
     }
