@@ -15,13 +15,28 @@ import ch.heigvd.daa_lab3.models.Type
 
 class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+    var currentSortType = SortType.DATE
     var items: List<NoteAndSchedule> = items
         set(value) {
+            val sortedValue = sort(value)
             val diffCallback = NotesDiffCallback(items, value)
             val diffItems = DiffUtil.calculateDiff(diffCallback)
-            field = value
+            field = sortedValue
             diffItems.dispatchUpdatesTo(this)
         }
+
+    enum class SortType {
+        DATE, ETA
+    }
+
+    private fun sort(values: List<NoteAndSchedule>): List<NoteAndSchedule> {
+        return values.sortedBy {
+            when (currentSortType) {
+                SortType.DATE -> it.note.creationDate
+                SortType.ETA -> it.schedule?.date
+            }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(

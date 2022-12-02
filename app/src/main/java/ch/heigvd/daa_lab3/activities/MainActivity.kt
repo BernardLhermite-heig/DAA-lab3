@@ -1,11 +1,15 @@
-package ch.heigvd.daa_lab3
+package ch.heigvd.daa_lab3.activities
 
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import ch.heigvd.daa_lab3.MyApp
+import ch.heigvd.daa_lab3.R
 import ch.heigvd.daa_lab3.fragments.NotesFragment
+import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
+import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
 class MainActivity : AppCompatActivity() {
     private val myViewModel: NotesViewModel by viewModels {

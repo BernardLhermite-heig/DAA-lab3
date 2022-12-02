@@ -9,10 +9,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.daa_lab3.MyApp
-import ch.heigvd.daa_lab3.NotesViewModel
-import ch.heigvd.daa_lab3.NotesViewModelFactory
 import ch.heigvd.daa_lab3.R
 import ch.heigvd.daa_lab3.adapter.NotesAdapter
+import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
+import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
 class NotesFragment : Fragment() {
     private val viewModel: NotesViewModel by activityViewModels {

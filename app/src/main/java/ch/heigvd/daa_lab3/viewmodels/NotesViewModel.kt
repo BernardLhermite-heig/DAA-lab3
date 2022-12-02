@@ -1,4 +1,4 @@
-package ch.heigvd.daa_lab3
+package ch.heigvd.daa_lab3.viewmodels
 
 import androidx.lifecycle.ViewModel
 import ch.heigvd.daa_lab3.database.DataRepository
