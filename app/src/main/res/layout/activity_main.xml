@@ -10,6 +10,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/notes_fragment"
+        android:name="ch.heigvd.daa_lab3.fragments.NotesFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent" />

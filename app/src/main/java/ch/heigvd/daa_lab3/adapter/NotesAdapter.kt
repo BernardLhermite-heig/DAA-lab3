@@ -115,8 +115,10 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
                 scheduleText.text = text
                 scheduleIcon.setColorFilter(color)
                 scheduleIcon.visibility = View.VISIBLE
+                scheduleText.visibility = View.VISIBLE
             } else {
                 scheduleIcon.visibility = View.GONE
+                scheduleText.visibility = View.GONE
             }
         }
 

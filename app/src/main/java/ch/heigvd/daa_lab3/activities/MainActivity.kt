@@ -12,7 +12,9 @@ import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
 import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
 class MainActivity : AppCompatActivity() {
-    private val notesFragment: NotesFragment by lazy { NotesFragment() }
+    private val notesFragment by lazy {
+        supportFragmentManager.findFragmentById(R.id.notes_fragment) as NotesFragment
+    }
     private val myViewModel: NotesViewModel by viewModels {
         NotesViewModelFactory((application as MyApp).repository)
     }
@@ -20,10 +22,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.notes_fragment, notesFragment)
-            .commit()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

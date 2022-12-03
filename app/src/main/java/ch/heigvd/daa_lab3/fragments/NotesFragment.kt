@@ -20,6 +20,10 @@ import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
  * @author Marengo Stéphane, Friedli Jonathan, Silvestri Géraud
  */
 class NotesFragment : Fragment() {
+    companion object {
+        private const val SORTED_BY_KEY = "SORTED_BY_KEY"
+    }
+
     private val notesAdapter: NotesAdapter by lazy { NotesAdapter() }
     private val viewModel: NotesViewModel by activityViewModels {
         NotesViewModelFactory((requireActivity().application as MyApp).repository)
@@ -33,9 +37,18 @@ class NotesFragment : Fragment() {
         return inflater.inflate(R.layout.notes_fragment, container, false)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable(SORTED_BY_KEY, notesAdapter.sortedBy)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        savedInstanceState?.let {
+            notesAdapter.sortedBy =
+                it.getSerializable(SORTED_BY_KEY, NotesAdapter.SortType::class.java)!!
+        }
         view.findViewById<RecyclerView>(R.id.notes_list).apply {
             adapter = notesAdapter
             layoutManager = LinearLayoutManager(context)
