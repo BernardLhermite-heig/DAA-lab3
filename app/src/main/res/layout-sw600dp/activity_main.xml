@@ -10,6 +10,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/notes_fragment"
+        android:name="ch.heigvd.daa_lab3.fragments.NotesFragment"
         android:layout_width="0dip"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,8 +22,6 @@
         android:layout_width="0dip"
         android:layout_height="match_parent"
         app:layout_constraintStart_toEndOf="@id/notes_fragment"
-        app:layout_constraintWidth_percent=".33"
-
-        />
+        app:layout_constraintWidth_percent=".33" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
