@@ -2,4 +2,6 @@
 <resources>
     <dimen name="margin_between_notes">10dp</dimen>
     <dimen name="note_icon_size">40dp</dimen>
+    <dimen name="controls_generate_button_margin">50dp</dimen>
+    <dimen name="controls_counter_title_size">50sp</dimen>
 </resources>

@@ -12,16 +12,16 @@
         android:id="@+id/notes_fragment"
         android:layout_width="0dip"
         android:layout_height="match_parent"
-        app:layout_constraintWidth_percent=".66"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent=".66" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/controle_fragment"
+        android:name="ch.heigvd.daa_lab3.fragments.ControlsFragment"
         android:layout_width="0dip"
         android:layout_height="match_parent"
-        app:layout_constraintWidth_percent=".33"
         app:layout_constraintStart_toEndOf="@id/notes_fragment"
-        android:name="ch.heigvd.daa_lab3.fragments.ControleFragment"
+        app:layout_constraintWidth_percent=".33"
 
         />
 

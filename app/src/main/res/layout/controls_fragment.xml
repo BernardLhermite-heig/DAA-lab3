@@ -5,12 +5,10 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/nb_notes"
+        android:id="@+id/nb_notes_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="50dp"
-        android:text="@string/nb_notes"
-        android:textSize="50sp"
+        android:textSize="@dimen/controls_counter_title_size"
         app:layout_constraintBottom_toTopOf="@id/generate_button"
         app:layout_constraintEnd_toEndOf="@id/generate_button"
         app:layout_constraintStart_toStartOf="@id/generate_button" />
@@ -20,6 +18,8 @@
         android:id="@+id/generate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/controls_generate_button_margin"
+        android:layout_marginBottom="@dimen/controls_generate_button_margin"
         android:text="@string/menu_generate"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,7 +30,6 @@
         android:id="@+id/delete_all_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:text="@string/menu_delete_all"
         app:layout_constraintEnd_toEndOf="@id/generate_button"
         app:layout_constraintStart_toStartOf="@id/generate_button"
