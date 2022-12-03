@@ -18,7 +18,6 @@ import java.util.*
 
 class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
-    var currentSortType = SortType.CREATION_DATE
     var items: List<NoteAndSchedule> = items
         set(value) {
             val sortedValue = sort(value)
@@ -27,14 +26,26 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
             field = sortedValue
             diffItems.dispatchUpdatesTo(this)
         }
+    var sortedBy = SortType.CREATION_DATE
+        set(value) {
+            if (field != value) {
+                field = value
+                items = items // On force le tri
+            }
+        }
 
     enum class SortType {
         CREATION_DATE, ETA
     }
 
+    /**
+     * Trie la liste en fonction de la valeur actuelle de sortedBy
+     * @param values La liste à trier
+     * @return La liste triée
+     */
     private fun sort(values: List<NoteAndSchedule>): List<NoteAndSchedule> {
         return values.sortedByDescending {
-            when (currentSortType) {
+            when (sortedBy) {
                 SortType.CREATION_DATE -> it.note.creationDate
                 SortType.ETA -> it.schedule?.date
             }
@@ -88,7 +99,10 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
 
             if (schedule != null) {
                 val today = LocalDateTime.now()
-                val date = LocalDateTime.ofInstant(schedule.date.toInstant(), TimeZone.getDefault().toZoneId())
+                val date = LocalDateTime.ofInstant(
+                    schedule.date.toInstant(),
+                    TimeZone.getDefault().toZoneId()
+                )
                 val diff: Long = ChronoUnit.MONTHS.between(today, date)
 
                 //val difference = Calendar.getInstance().timeInMillis - schedule.date.timeInMillis
@@ -101,7 +115,7 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
                         else -> Color.GRAY
                     }
                 )
-            }else{
+            } else {
                 //scheduleText.text = "null"
                 scheduleIcon.setColorFilter(Color.GREEN)
             }
@@ -126,7 +140,11 @@ class NotesDiffCallback(
         val new = newList[newItemPosition]
 
         return old::class == new::class
-                && old == new
-//                && old.note.state == new.note.state
+                && old.note.state == new.note.state
+                && old.note.title == new.note.title
+                && old.note.text == new.note.text
+                && old.note.type == new.note.type
+                && old.note.creationDate == new.note.creationDate
+                && old.schedule?.date == new.schedule?.date
     }
 }
