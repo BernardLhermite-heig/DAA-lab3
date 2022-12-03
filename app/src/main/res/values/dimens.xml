@@ -4,4 +4,6 @@
     <dimen name="note_icon_size">40dp</dimen>
     <dimen name="controls_generate_button_margin">50dp</dimen>
     <dimen name="controls_counter_title_size">50sp</dimen>
+    <dimen name="layout_margin_start">4dp</dimen>
+    <dimen name="layout_margin_end">8dp</dimen>
 </resources>

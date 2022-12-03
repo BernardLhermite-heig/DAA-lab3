@@ -31,6 +31,13 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     companion object {
         private const val NOTE = 1
         private const val NOTE_WITH_SCHEDULE = 2
+        private val SCHEDULE_UNITS = arrayOf(
+            ChronoUnit.MONTHS,
+            ChronoUnit.WEEKS,
+            ChronoUnit.DAYS,
+            ChronoUnit.HOURS,
+            ChronoUnit.MINUTES
+        )
     }
 
     var items: List<NoteAndSchedule> = items
@@ -155,15 +162,7 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
             val formatter =
                 MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.WIDE)
 
-            val units = arrayOf(
-                ChronoUnit.MONTHS,
-                ChronoUnit.WEEKS,
-                ChronoUnit.DAYS,
-                ChronoUnit.HOURS,
-                ChronoUnit.MINUTES
-            )
-
-            for (unit in units) {
+            for (unit in SCHEDULE_UNITS) {
                 val delta = unit.between(today, targetDate)
                 if (delta <= 0) {
                     continue

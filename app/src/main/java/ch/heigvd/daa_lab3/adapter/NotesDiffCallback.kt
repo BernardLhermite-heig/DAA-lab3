@@ -21,15 +21,6 @@ class NotesDiffCallback(
     }
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldList[oldItemPosition]
-        val new = newList[newItemPosition]
-
-        return old::class == new::class
-                && old.note.state == new.note.state
-                && old.note.title == new.note.title
-                && old.note.text == new.note.text
-                && old.note.type == new.note.type
-                && old.note.creationDate == new.note.creationDate
-                && old.schedule?.date == new.schedule?.date
+        return oldList[oldItemPosition] == newList[newItemPosition]
     }
 }

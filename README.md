@@ -22,17 +22,11 @@ Version tablette:
 ### 1.1. Layout
 Puisque l'inferface doit être différente entre la version téléphone et la version tablettte, nous avons créé un dossier `layout` et un autre dossier `layout-sw600dp`. Les deux dossiers contiennent un fichier `activity_main.xml` contenant le layout de l'application. De cette manière, le layout de l'application est différent selon la taille de l'appareil. A partir de 600dp, l'application est considérée comme une tablette.
 
-Layout téléphone:
+**Layout téléphone:**
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="8dp"
-    tools:context=".activities.MainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout
+    [...]>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/notes_fragment"
@@ -44,29 +38,489 @@ Layout téléphone:
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
 
-Layout tablette:
+**Layout tablette:**
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginStart="4dp"
-    android:layout_marginEnd="8dp"
-    tools:context=".activities.MainActivity">
+<androidx.constraintlayout.widget.ConstraintLayout 
+    [...]>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/notes_fragment"
         android:name="ch.heigvd.daa_lab3.fragments.NotesFragment"
-        android:layout_width="match_parent"
+        android:layout_width="0dip"
         android:layout_height="match_parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintWidth_percent=".66" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/controle_fragment"
+        android:name="ch.heigvd.daa_lab3.fragments.ControlsFragment"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@id/notes_fragment"
+        app:layout_constraintWidth_percent=".33" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 ```
+Dans les fichiers `xml`, nous faisons aux fragments `NotesFragment` et `ControlsFragment` grâce à la propriété `android:name`.
 
 Pour les menus, nous avons fait de la même manière avec un dossier `menu` et un autre dossier `menu-sw600dp` et les deux dossiers contiennent un fichier `main_menu.xml`.
+
+**Menu:**
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/menu_show_sorting_option"
+        android:title="@string/menu_sort"
+        android:icon="@drawable/sort"
+        app:showAsAction="ifRoom|withText">
+        <menu>
+            <item
+                android:id="@+id/menu_sort_creation_date"
+                android:title="@string/menu_sort_creation_date" />
+            <item
+                android:id="@+id/menu_sort_eta"
+                android:title="@string/menu_sort_eta" />
+        </menu>
+    </item>
+    <!-- les deux items en dessous ne sont pas présent dans le menu tablette-->
+    <item
+        android:id="@+id/menu_generate"
+        android:title="@string/menu_generate" />
+    <item
+        android:id="@+id/menu_delete_all"
+        android:title="@string/menu_delete_all" />
+</menu>
+```
+
+### 1.2. Fragments
+
+Nous avons créé plusieurs fragments pour l'application. Le fragment `NotesFragment` contient la `RecyclerView` et le fragment `ControlsFragment` contient les boutons pour générer une note et pour supprimer toutes les notes. Le `ControlsFragment` n'est pas présent dans la version téléphone.
+
+Dans les deux fragments, nous avons une variable `ViewModel` qui est déclaré de la façon suivante:
+```kotlin
+private val viewModel: NotesViewModel by activityViewModels {
+    NotesViewModelFactory((requireActivity().application as MyApp).repository)
+}
+```
+
+**NotesFragment:**
+```kt
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    [...]
+
+    view.findViewById<RecyclerView>(R.id.notes_list).apply {
+        adapter = notesAdapter
+        layoutManager = LinearLayoutManager(context)
+    }
+
+    viewModel.allNotes.observe(viewLifecycleOwner) { notes ->
+        notesAdapter.items = notes
+    }
+}
+
+fun sortByEta() {
+    notesAdapter.sortedBy = NotesAdapter.SortType.ETA
+}
+
+fun sortByCreationDate() {
+    notesAdapter.sortedBy = NotesAdapter.SortType.CREATION_DATE
+}
+```
+Il y a deux fonctions publiques permettant de chosir un ordre de tri pour la `RecyclerView`. Ces fonctions sont appelées par la `MainActivity`.
+
+**ControlsFragment:**
+```kt
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    view.findViewById<Button>(R.id.generate_button).setOnClickListener {
+        viewModel.generateANote()
+    }
+
+    view.findViewById<Button>(R.id.delete_all_button).setOnClickListener {
+        viewModel.deleteAllNotes()
+    }
+
+    val counterText = view.findViewById<TextView>(R.id.nb_notes_text)
+    viewModel.countNotes.observe(viewLifecycleOwner) { count ->
+        counterText.text = count.toString()
+    }
+}
+```
+Le fragment `ControlsFragment` contient deux boutons et un `TextView` pour afficher le nombre de notes. Les deux boutons appellent les méthodes `generateANote` et `deleteAllNotes` du viewModel.
+
+### 1.3. Base de données
+La base de données a été implémentée comme vu en cours.
+
+**MyDatabase**
+```kt
+@Database(
+    entities = [Note::class, Schedule::class],
+    version = 1,
+    exportSchema = true
+)
+@TypeConverters(CalendarConverter::class)
+abstract class MyDatabase : RoomDatabase() {
+    abstract fun noteDAO(): NoteDAO
+
+    companion object {
+        private const val NB_NOTES_TO_CREATE_IF_EMPTY = 10
+
+        private var INSTANCE: MyDatabase? = null
+
+        fun getDatabase(context: Context): MyDatabase {
+            [...] // Même implémentation que celle vue en cours
+        }
+
+        private fun populateCallBack(): Callback {
+            return object : Callback() {
+                override fun onOpen(db: SupportSQLiteDatabase) {
+                    INSTANCE?.let { database ->
+                        if (db.query("SELECT * FROM Note").count > 0) {
+                            return
+                        }
+
+                        thread {
+                            repeat(NB_NOTES_TO_CREATE_IF_EMPTY) {
+                                val note = Note.generateRandomNote()
+                                val schedule = Note.generateRandomSchedule()
+
+                                val noteId = database.noteDAO().insert(note)
+                                if (schedule != null) {
+                                    schedule.ownerId = noteId
+                                    database.noteDAO().insert(schedule)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+```
+Nous avons un callback qui va regarder si la DB est vide, à son ouverture. Si c'est le cas, il va créer 10 notes aléatoires et les insérer dans la base de données. Nous vérifions si la DB est vide sans passer par le DAO, pour éviter de recevoir un `LiveData` et attendre le résultat.
+
+**NoteDAO:**
+```kt
+@Dao
+interface NoteDAO {
+    @Insert
+    fun insert(note: Note): Long
+
+    @Insert
+    fun insert(schedule: Schedule): Long
+
+    @Query("SELECT COUNT(*) FROM Note")
+    fun getCount(): LiveData<Long>
+
+    @Transaction
+    @Query("SELECT * FROM Note")
+    fun getAllNotes(): LiveData<List<NoteAndSchedule>>
+
+    @Query("DELETE FROM Note")
+    fun deleteAllNotes()
+}
+```
+Nous retournons directement des `NoteAndSchedule` sans distinction.
+
+**DataRepository**
+```kt
+class DataRepository(
+    private val noteDAO: NoteDAO,
+    private val applicationScope: CoroutineScope
+) {
+    val allNotes = noteDAO.getAllNotes()
+    val notesCount = noteDAO.getCount()
+
+    fun insert(note: Note, schedule: Schedule?) {
+        applicationScope.launch {
+            val noteId = noteDAO.insert(note)
+
+            if (schedule != null) {
+                schedule.ownerId = noteId
+                noteDAO.insert(schedule)
+            }
+        }
+    }
+
+    fun insertRandomNote() {
+        applicationScope.launch {
+            val note = Note.generateRandomNote()
+            val schedule = Note.generateRandomSchedule()
+            insert(note, schedule)
+        }
+    }
+
+    fun deleteAllNotes() {
+        applicationScope.launch {
+            noteDAO.deleteAllNotes()
+        }
+    }
+}
+```
+Le `ViewModel` utilise ces quelques méthodes pour interagir avec les données.
+
+**CalendarConverter**
+```kt
+class CalendarConverter {
+    @TypeConverter
+    fun toCalendar(dateLong: Long): Calendar =
+        Calendar.getInstance().apply {
+            time = Date(dateLong)
+        }
+
+    @TypeConverter
+    fun fromCalendar(date: Calendar) =
+        date.time.time // Long
+}
+```
+
+**MyApp**
+```kt
+class MyApp : Application() {
+    private val applicationScope = CoroutineScope(SupervisorJob())
+
+    val repository by lazy {
+        val database = MyDatabase.getDatabase(this)
+        DataRepository(database.noteDAO(), applicationScope)
+    }
+}
+```
+Cela permet de n'avoir qu'une seule instance de la DB.
+
+### 1.4. ViewModel
+L'implémentation du `ViewModel` est identique à celle proposée dans la donnée.
+
+**NoteViewModel**
+```kt
+class NotesViewModel(private val repository: DataRepository) : ViewModel() {
+    val allNotes = repository.allNotes
+    val countNotes = repository.notesCount
+
+    fun generateANote() {
+        repository.insertRandomNote()
+    }
+
+    fun deleteAllNotes() {
+        repository.deleteAllNotes()
+    }
+}
+```
+
+**NoteViewModelFactory**
+```kt
+class NotesViewModelFactory(private val repository: DataRepository) : ViewModelProvider.Factory {
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(NotesViewModel::class.java)) {
+            return NotesViewModel(repository) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
+}
+```
+Comme vu en cours, nous utilisons une factory pour instancier le `ViewModel` avec le `Repository` en paramètre.
+
+### 1.5. MainActivity
+
+
+```kt
+class MainActivity : AppCompatActivity() {
+    private val notesFragment by lazy {
+        supportFragmentManager.findFragmentById(R.id.notes_fragment) as NotesFragment 
+    } // Récupération d'une référence vers le fragment
+
+    private val myViewModel: NotesViewModel by viewModels {
+        NotesViewModelFactory((application as MyApp).repository)
+    }
+
+    // Utilisation du menu décrit plus haut
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.menu_generate -> {
+                myViewModel.generateANote()
+                true
+            }
+            R.id.menu_delete_all -> {
+                myViewModel.deleteAllNotes()
+                true
+            }
+            R.id.menu_sort_eta -> {
+                notesFragment.sortByEta() // Appel de méthode publique du fragment
+                true
+            }
+            R.id.menu_sort_creation_date -> {
+                notesFragment.sortByCreationDate() // Appel de méthode publique du fragment
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+}
+```
+
+### 1.6. Adapters
+Nous avons deux adapters, un permettant de gérer une liste de notes et l'autre de gérer les différences entre deux listes de notes.
+
+**NoteAdapter**
+```kt
+class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
+    RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+    companion object {
+        private const val NOTE = 1
+        private const val NOTE_WITH_SCHEDULE = 2
+        private val SCHEDULE_UNITS = arrayOf(
+            ChronoUnit.MONTHS,
+            ChronoUnit.WEEKS,
+            ChronoUnit.DAYS,
+            ChronoUnit.HOURS,
+            ChronoUnit.MINUTES
+        )
+    }
+
+    var items: List<NoteAndSchedule> = items
+        set(value) {
+            val sortedValue = sort(value)
+            val diffCallback = NotesDiffCallback(items, sortedValue)
+            val diffItems = DiffUtil.calculateDiff(diffCallback)
+            field = sortedValue
+            diffItems.dispatchUpdatesTo(this)
+        }
+    var sortedBy = SortType.CREATION_DATE
+        set(value) {
+            if (field != value) {
+                field = value
+                items = items // On force le tri
+            }
+        }
+
+    enum class SortType {
+        CREATION_DATE, ETA
+    }
+
+    private fun sort(values: List<NoteAndSchedule>): List<NoteAndSchedule> {
+        return when (sortedBy) {
+            SortType.CREATION_DATE -> values.sortedBy { it.note.creationDate }
+            SortType.ETA -> values.sortedWith(compareBy<NoteAndSchedule> { it.schedule == null }
+                .thenBy { it.schedule?.date })
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layout = when (viewType) {
+            NOTE -> R.layout.list_item_note
+            NOTE_WITH_SCHEDULE -> R.layout.list_item_note_with_schedule
+            else -> throw IllegalArgumentException("Unknown view type $viewType")
+        }
+
+        return ViewHolder(
+            LayoutInflater.from(parent.context).inflate(layout, parent, false)
+        )
+    }
+
+    [...]
+
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position].schedule == null) NOTE else NOTE_WITH_SCHEDULE
+    }
+
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        // Récupération des vues
+        [...]
+
+        fun bind(noteAndSchedule: NoteAndSchedule) {
+            val note = noteAndSchedule.note
+            val schedule = noteAndSchedule.schedule
+
+            // Remplissage des champs présents dans les deux layouts
+            [...]
+
+            // Remplissage des champs spécifiques au layout avec schedule
+            if (schedule != null) {
+                [...]
+            }
+        }
+
+        private fun getScheduleTextAndColor(
+            scheduleDate: Calendar,
+            context: Context
+        ): Pair<String, Int> {
+            // Si la date est passée, on retourne directement "late"
+            if (scheduleDate.before(Calendar.getInstance())) {
+                return context.getString(R.string.schedule_late) to
+                        ContextCompat.getColor(context, R.color.schedule_late)
+            }
+
+            val color = ContextCompat.getColor(context, R.color.schedule_in_time)
+            val today = LocalDateTime.now()
+            val targetDate = LocalDateTime.ofInstant(
+                scheduleDate.toInstant(),
+                TimeZone.getDefault().toZoneId()
+            )
+            val formatter =
+                MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.WIDE)
+
+            for (unit in SCHEDULE_UNITS) {
+                val delta = unit.between(today, targetDate)
+                if (delta <= 0) {
+                    continue
+                }
+                return formatter.formatMeasures(Measure(delta, unit.toMeasureUnit())) to color
+            }
+
+            return context.getString(R.string.schedule_now) to color
+        }
+
+        private fun ChronoUnit.toMeasureUnit(): MeasureUnit {
+            return when (this) { 
+                ChronoUnit.MONTHS -> MeasureUnit.MONTH
+                [...]
+                else -> throw UnsupportedOperationException("Unsupported unit $this")
+            }
+        }
+    }
+}
+```
+Pour la gestion du tri, nous avons un enum `SortType` ainsi qu'un champ `sortedBy` possédant un setter qui va réaffecter la liste à elle-même pour forcer un tri. La méthode privée `sort` retourne la liste triée en fonction de la valeur de `sortedBy`. Dans le setter d'`items`, la liste est d'abord triée puis les différences sont calculées. 
+
+Pour calculer le temps restant, nous utilisons la classe `ChronoUnit` permettant d'obtenir des différences dans plusieurs unités de temps (jours, semaines, mois, ...). Le code va trouver la différence entre deux dates dans l'unité la plus grande possible (le mois est la plus grande unité), en parcourant le tableau `SCHEDULE_UNITS`. Par exemple, si il reste 5 mois et 2 jours, on obtiendra une différence de 5.
+
+Ce résultat est ensuite formaté en utilisant la classe `MeasureFormat`. Cette classe permet de formatter un nombre et une unité en une chaîne de caractères localisée. Cela permet, par exemple, de retourner `1 month` en anglais et `1 mois` en français. De plus, cela prend en compte le pluriel.
+
+Pour combiner les deux, nous avons fait une méthode d'extension `ChronoUnit.toMeasureUnit` permettant de faire le lien entre `ChronoUnit` et `MeasureUnit`.
+
+Les objets de la liste seront affichés à l'aide de deux layout différents (`R.layout.list_item_note` et `R.layout.list_item_note_with_schedule`), comme indiqué dans la donnée. Pour ce faire, nous utilisons la méthode `getItemViewType` qui retourne le type de vue à utiliser pour l'item à la position donnée. Nous avons donc deux constantes `NOTE` et `NOTE_WITH_SCHEDULE` qui correspondent aux deux types de vue. Dans la méthode `onCreateViewHolder`, nous retournons un `ViewHolder` avec une `View` différente en fonction du type de vue.
+
+**NotesDiffCallback**
+```kt
+class NotesDiffCallback(
+    private val oldList: List<NoteAndSchedule>,
+    private val newList: List<NoteAndSchedule>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition].note.noteId == newList[newItemPosition].note.noteId
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
+}
+```
+Dans la méthode `areContentsTheSame`, nous comparons directement les objets `NoteAndSchedule` avec l'opérateur `==` car il s'agit de `data class` et que leurs propriétés sont toutes définies dans le constructeur (idem pour `Note` et pour `Schedule`). Les méthodes `equals` et `hashCode` sont donc générées automatiquement.
 
 ## 2. Question complémentaire
 

@@ -11,6 +11,11 @@ import ch.heigvd.daa_lab3.fragments.NotesFragment
 import ch.heigvd.daa_lab3.viewmodels.NotesViewModel
 import ch.heigvd.daa_lab3.viewmodels.NotesViewModelFactory
 
+/**
+ * Activité principale de l'application. Les callback du menu sont définis ici.
+ *
+ * @author Marengo Stéphane, Friedli Jonathan, Silvestri Géraud
+ */
 class MainActivity : AppCompatActivity() {
     private val notesFragment by lazy {
         supportFragmentManager.findFragmentById(R.id.notes_fragment) as NotesFragment

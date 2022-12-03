@@ -10,7 +10,7 @@ import java.util.*
  */
 class CalendarConverter {
     @TypeConverter
-    fun toCalendar(dateLong: Long) =
+    fun toCalendar(dateLong: Long): Calendar =
         Calendar.getInstance().apply {
             time = Date(dateLong)
         }
