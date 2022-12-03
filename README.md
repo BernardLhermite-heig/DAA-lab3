@@ -527,10 +527,65 @@ Dans la méthode `areContentsTheSame`, nous comparons directement les objets `No
 ### 2.1
 *Quelle est la meilleure approche pour sauver le choix de l'option de tri de la liste des notes ? Vous justifierez votre réponse et l’illustrez en présentant le code mettant en œuvre votre approche.*
 
+Nous avons décidé de gérer le tri entièrement dans l'adapter c'est à dire au niveau des vues. Avec une telle approche, l'état du tri ne doit pas être stocké dans le `ViewModel` car il est spécifique à la vue. C'est donc au fragment `NotesFragment` de gérer cet état. Pour ce faire, nous avons stocké l'état dans le bundle: 
+```kt	
+override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putSerializable(SORTED_BY_KEY, notesAdapter.sortedBy)
+}
+
+override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
+    savedInstanceState?.let {
+        notesAdapter.sortedBy =
+            it.getSerializable(SORTED_BY_KEY, NotesAdapter.SortType::class.java)!!
+    }
+
+    [...]
+}
+```
+
+
 ### 2.2
 *L'accès à la liste des notes issues de la base de données `Room` se fait avec une `LiveData`. Est ce que cette solution présente des limites ? Si oui, quelles sont-elles ? Voyez-vous une autre approche plus adaptée ?*
+
+Oui, cette solution présente des limites. En effet, la requête suivante va charger toutes les données dans la `LiveData` ce qui peut rapidement surcharger la mémoire. Cela n'est donc clairement pas adapté pour des grandes bases de données. 
+```kt
+@Query("SELECT * FROM Note")
+fun getAllNotes(): LiveData<List<NoteAndSchedule>>
+```
+
+Une meilleure approche serait d'utiliser une `Flow` qui permet de récupérer les données au fur et à mesure. Cela permet de ne pas surcharger la mémoire et de ne charger que les données nécessaires. 
+
+Il serait également possible de paginer les données à l'aide de la librairie `Paging`.
 
 ### 2.3
 *Les notes affichées dans la `RecyclerView` ne sont pas sélectionnables ni cliquables. Comment procéderiez-vous si vous souhaitiez proposer une interface permettant de sélectionner une note pour l’éditer ?*
 
-La `RecyclerView` n'a pas de `Item Click Listener`, il faudrait donc que nous l'implémentions nous-même. La classe MainActivity devrait donc implémenter une interface pour les `onClick event`. Cette interface serait ensuite passée à la `RecylcerView Adapter`, puis la `ViewHolder` appelerait la méthode de l'interface qui donnerait la position de l'item cliqué.
+Il faut ajouter un paramètre pour le callback dans le constructeur de `NoteAdapter`:
+```kt
+class NotesAdapter(
+    private val callback: (NoteAndSchedule) -> Unit,
+    items: List<NoteAndSchedule> = listOf()
+)
+```
+Ensuite, il faut modifier la méthode `onBindViewHolder` de l'adapter pour ajouter un listener sur la vue:
+```kt
+override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+    val item = items[position]
+    holder.bind(item)
+    holder.itemView.setOnClickListener { callback(item) }
+}
+```
+
+Finalement, lors de la création de l'adapter, il est possible de passer un callback:
+```kt
+NotesAdapter(
+    { item ->
+        println(item.note.title)
+    }
+)
+```
+
+Evidemment, il faudrait ajouter pas mal d'autre chose afin que l'Interface Utilisateur reste intuitive. Par exemple, rajouter des animations quand on clique sur une note. Mais l'idée principale est là.
