@@ -28,6 +28,11 @@ import java.util.*
  */
 class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
+    companion object {
+        private const val NOTE = 1
+        private const val NOTE_WITH_SCHEDULE = 2
+    }
+
     var items: List<NoteAndSchedule> = items
         set(value) {
             val sortedValue = sort(value)
@@ -54,17 +59,22 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
      * @return La liste triée
      */
     private fun sort(values: List<NoteAndSchedule>): List<NoteAndSchedule> {
-        return values.sortedByDescending {
-            when (sortedBy) {
-                SortType.CREATION_DATE -> it.note.creationDate
-                SortType.ETA -> it.schedule?.date
-            }
+        return when (sortedBy) {
+            SortType.CREATION_DATE -> values.sortedBy { it.note.creationDate }
+            SortType.ETA -> values.sortedWith(compareBy<NoteAndSchedule> { it.schedule == null }
+                .thenBy { it.schedule?.date })
         }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val layout = when (viewType) {
+            NOTE -> R.layout.list_item_note
+            NOTE_WITH_SCHEDULE -> R.layout.list_item_note_with_schedule
+            else -> throw IllegalArgumentException("Unknown view type $viewType")
+        }
+
         return ViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.list_item_notes, parent, false)
+            LayoutInflater.from(parent.context).inflate(layout, parent, false)
         )
     }
 
@@ -74,6 +84,10 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
 
     override fun getItemCount(): Int {
         return items.size
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return if (items[position].schedule == null) NOTE else NOTE_WITH_SCHEDULE
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -114,11 +128,6 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
                 val (text, color) = getScheduleTextAndColor(schedule.date, scheduleIcon.context)
                 scheduleText.text = text
                 scheduleIcon.setColorFilter(color)
-                scheduleIcon.visibility = View.VISIBLE
-                scheduleText.visibility = View.VISIBLE
-            } else {
-                scheduleIcon.visibility = View.GONE
-                scheduleText.visibility = View.GONE
             }
         }
 
