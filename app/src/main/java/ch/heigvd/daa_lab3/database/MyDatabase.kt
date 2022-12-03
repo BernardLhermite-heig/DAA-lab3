@@ -58,7 +58,7 @@ abstract class MyDatabase : RoomDatabase() {
                         if (db.query("SELECT * FROM Note").count > 0) {
                             return
                         }
-                        
+
                         thread {
                             repeat(NB_NOTES_TO_CREATE_IF_EMPTY) {
                                 val note = Note.generateRandomNote()
