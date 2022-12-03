@@ -1,11 +1,15 @@
 package ch.heigvd.daa_lab3.adapter
 
-import android.graphics.Color
+import android.content.Context
+import android.icu.text.MeasureFormat
+import android.icu.util.Measure
+import android.icu.util.MeasureUnit
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import ch.heigvd.daa_lab3.R
@@ -93,38 +97,86 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
                 }
             )
 
-            typeIcon.setColorFilter(
-                when (note.state) {
-                    State.DONE -> Color.GREEN
-                    State.IN_PROGRESS -> Color.GRAY
-                }
-            )
-
             title.text = note.title
             content.text = note.text
 
-            if (schedule != null) {
-                val today = LocalDateTime.now()
-                val date = LocalDateTime.ofInstant(
-                    schedule.date.toInstant(),
-                    TimeZone.getDefault().toZoneId()
-                )
-                val diff: Long = ChronoUnit.MONTHS.between(today, date)
-
-                //val difference = Calendar.getInstance().timeInMillis - schedule.date.timeInMillis
-                //scheduleText.text = difference.milliseconds.inWholeDays.toString() + " days"
-
-                scheduleText.text = diff.toString() + " months"
-                scheduleIcon.setColorFilter(
-                    when (true) {
-                        true -> Color.RED
-                        else -> Color.GRAY
+            typeIcon.setColorFilter(
+                ContextCompat.getColor(
+                    typeIcon.context,
+                    when (note.state) {
+                        State.IN_PROGRESS -> R.color.note_in_progress
+                        State.DONE -> R.color.note_done
                     }
                 )
+            )
+
+            if (schedule != null) {
+                val (text, color) = getScheduleTextAndColor(schedule.date, scheduleIcon.context)
+                scheduleText.text = text
+                scheduleIcon.setColorFilter(color)
+                scheduleIcon.visibility = View.VISIBLE
             } else {
-                //scheduleText.text = "null"
-                scheduleIcon.setColorFilter(Color.GREEN)
+                scheduleIcon.visibility = View.GONE
+            }
+        }
+
+        /**
+         * Retourne le texte et la couleur à afficher pour une date de schedule donnée.
+         * @param scheduleDate La date du schedule
+         * @param context Un context pour récupérer les couleurs
+         * @return Le texte et la couleur à afficher
+         */
+        private fun getScheduleTextAndColor(
+            scheduleDate: Calendar,
+            context: Context
+        ): Pair<String, Int> {
+            if (scheduleDate.before(Calendar.getInstance())) {
+                return context.getString(R.string.schedule_late) to
+                        ContextCompat.getColor(context, R.color.schedule_late)
+            }
+
+            val color = ContextCompat.getColor(context, R.color.schedule_in_time)
+            val today = LocalDateTime.now()
+            val targetDate = LocalDateTime.ofInstant(
+                scheduleDate.toInstant(),
+                TimeZone.getDefault().toZoneId()
+            )
+            val formatter =
+                MeasureFormat.getInstance(Locale.getDefault(), MeasureFormat.FormatWidth.WIDE)
+
+            val units = arrayOf(
+                ChronoUnit.MONTHS,
+                ChronoUnit.WEEKS,
+                ChronoUnit.DAYS,
+                ChronoUnit.HOURS,
+                ChronoUnit.MINUTES
+            )
+
+            for (unit in units) {
+                val delta = unit.between(today, targetDate)
+                if (delta <= 0) {
+                    continue
+                }
+                return formatter.formatMeasures(Measure(delta, unit.toMeasureUnit())) to color
+            }
+
+            return context.getString(R.string.schedule_now) to color
+        }
+
+        /**
+         * Convertit un ChronoUnit en MeasureUnit
+         * @throws UnsupportedOperationException si l'unité désirée n'est pas supportée
+         */
+        private fun ChronoUnit.toMeasureUnit(): MeasureUnit {
+            return when (this) {
+                ChronoUnit.MONTHS -> MeasureUnit.MONTH
+                ChronoUnit.WEEKS -> MeasureUnit.WEEK
+                ChronoUnit.DAYS -> MeasureUnit.DAY
+                ChronoUnit.HOURS -> MeasureUnit.HOUR
+                ChronoUnit.MINUTES -> MeasureUnit.MINUTE
+                else -> throw UnsupportedOperationException("Unsupported unit $this")
             }
         }
     }
 }
+

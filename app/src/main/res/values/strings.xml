@@ -10,5 +10,9 @@
     <string name="menu_delete_all">Tout supprimer</string>
 
     <string name="nb_notes">11</string>
-    <string name="basket_desc">Un panier</string>
+
+    <string name="schedule_late">late</string>
+    <string name="schedule_now">now</string>
+    <string name="note_icon_description">Define what type of note this is</string>
+    <string name="schedule_icon_description">Define when this note is scheduled</string>
 </resources>
