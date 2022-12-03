@@ -11,11 +11,11 @@ Le but de ce laboratoire est de développer une application android basée sur u
 
 Version téléphone:
 
-![Version Mobile](/images/mobileVersiond.jpg) 
+![Version Mobile](/images/mobileVersion.jpg) 
 
 Version tablette:
 
-![Version Tablette](/images/tabletVersiond.png)
+![Version Tablette](/images/tabletVersion.png)
 //TODO Mettre l'image tablette quand les notes sont fix.
 ## 1. Détails d'implémentation
 
