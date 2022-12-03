@@ -9,6 +9,11 @@ import ch.heigvd.daa_lab3.models.Note
 import ch.heigvd.daa_lab3.models.NoteAndSchedule
 import ch.heigvd.daa_lab3.models.Schedule
 
+/**
+ * DAO permettant de manipuler les notes et les schedules.
+ *
+ * @author Marengo Stéphane, Friedli Jonathan, Silvestri Géraud
+ */
 @Dao
 interface NoteDAO {
     @Insert

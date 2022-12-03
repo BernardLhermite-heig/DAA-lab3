@@ -16,6 +16,12 @@ import java.time.LocalDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
+/**
+ * Adapter permettant de gérer une liste de notes.
+ * La liste peut être triée grâce à la propriété [sortedBy].
+ *
+ * @author Marengo Stéphane, Friedli Jonathan, Silvestri Géraud
+ */
 class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     RecyclerView.Adapter<NotesAdapter.ViewHolder>() {
     var items: List<NoteAndSchedule> = items
@@ -120,31 +126,5 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
                 scheduleIcon.setColorFilter(Color.GREEN)
             }
         }
-    }
-}
-
-class NotesDiffCallback(
-    private val oldList: List<NoteAndSchedule>,
-    private val newList: List<NoteAndSchedule>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition].note.noteId == newList[newItemPosition].note.noteId
-    }
-
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val old = oldList[oldItemPosition]
-        val new = newList[newItemPosition]
-
-        return old::class == new::class
-                && old.note.state == new.note.state
-                && old.note.title == new.note.title
-                && old.note.text == new.note.text
-                && old.note.type == new.note.type
-                && old.note.creationDate == new.note.creationDate
-                && old.schedule?.date == new.schedule?.date
     }
 }

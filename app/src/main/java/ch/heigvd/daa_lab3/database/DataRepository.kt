@@ -5,6 +5,11 @@ import ch.heigvd.daa_lab3.models.Schedule
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Gère les interactions avec les données.
+ *
+ * @author Marengo Stéphane, Friedli Jonathan, Silvestri Géraud
+ */
 class DataRepository(
     private val noteDAO: NoteDAO,
     private val applicationScope: CoroutineScope
@@ -12,6 +17,11 @@ class DataRepository(
     val allNotes = noteDAO.getAllNotes()
     val notesCount = noteDAO.getCount()
 
+    /**
+     * Ajoute une note possédant éventuellement un schedule.
+     * @param note La note à insérer
+     * @param schedule L'éventuel schedule associé à la note
+     */
     fun insert(note: Note, schedule: Schedule?) {
         applicationScope.launch {
             val noteId = noteDAO.insert(note)
@@ -23,6 +33,9 @@ class DataRepository(
         }
     }
 
+    /**
+     * Ajoute une note aléatoire.
+     */
     fun insertRandomNote() {
         applicationScope.launch {
             val note = Note.generateRandomNote()
@@ -31,6 +44,9 @@ class DataRepository(
         }
     }
 
+    /**
+     * Supprime l'ensemble des notes ainsi que les éventuels schedules associés.
+     */
     fun deleteAllNotes() {
         applicationScope.launch {
             noteDAO.deleteAllNotes()
