@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private val notesFragment by lazy {
         supportFragmentManager.findFragmentById(R.id.notes_fragment) as NotesFragment
     }
-    private val myViewModel: NotesViewModel by viewModels {
+    private val viewModel: NotesViewModel by viewModels {
         NotesViewModelFactory((application as MyApp).repository)
     }
 
@@ -37,11 +37,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.menu_generate -> {
-                myViewModel.generateANote()
+                viewModel.generateANote()
                 true
             }
             R.id.menu_delete_all -> {
-                myViewModel.deleteAllNotes()
+                viewModel.deleteAllNotes()
                 true
             }
             R.id.menu_sort_eta -> {
