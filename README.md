@@ -4,19 +4,18 @@
 
 ### Friedli Jonathan, Marengo Stéphane, Silvestri Géraud
 
-### 15.11.2022
+### 07.12.2022
 
 ## Introduction
 
-Le but de ce laboratoire est de développer une application android basée sur une architechture `MVVM` et ayant une base de données `Room`. Cette application permet d'afficher une liste de notes et doit proposer une interface graphique différentes pour les smartphones et les tablettes.
+Le but de ce laboratoire est de développer une application android basée sur une architechture `MVVM` et ayant une base de données `Room`. Cette application permet d'afficher une liste de notes et doit proposer une interface graphique différentes pour les smartphones et les tablettes:
 
-Version téléphone:
+<p align="middle">
+    <img src="./docs/mobileVersion.jpg" alt="drawing" height="320"/>
+    <img src="./docs/TabletVersion.png" alt="drawing" width="520"/>
+</p>
 
-![Version Mobile](/docs/mobileVersion.jpg)
-
-Version tablette:
-
-![Version Tablette](/docs/TabletVersion.png)
+<div style="page-break-after: always;"></div>
 
 ## 1. Détails d'implémentation
 
@@ -63,6 +62,8 @@ Puisque l'inferface doit être différente entre la version téléphone et la ve
 
 Les deux layouts sont très similaires, la seule différence est que dans le layout de la tablette, nous avons un autre `FragmentContainerView` pour le `ControlsFragment`. Les fragments sont référencés dans le layout grâce à la propriété `android:name` des `FragmentContainerView`.
 
+<div style="page-break-after: always;"></div>
+
 **Menu:**
 
 Pour les menus, nous avons procédé de la même manière que précédemment, en créant donc un dossier `menu` et un autre dossier `menu-sw600dp` contenant tout deux un fichier `main_menu.xml`.
@@ -96,6 +97,8 @@ Pour les menus, nous avons procédé de la même manière que précédemment, en
 ```
 
 Les ids des éléments sont les mêmes dans les deux menus, permettant ainsi de ne pas faire de différence lors du traitement des événements de clic sur les éléments du menu.
+
+<div style="page-break-after: always;"></div>
 
 ### 1.2. Fragments
 
@@ -178,6 +181,8 @@ override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 Lorsque la vue est créée, nous assignons les listeners aux boutons et nous observons le nombre de notes du `ViewModel` pour mettre à jour le `TextView` affichant le nombre de notes.
 
 Les deux boutons appellent simplement les méthodes `generateANote` et `deleteAllNotes` du `ViewModel`.
+
+<div style="page-break-after: always;"></div>
 
 ### 1.3. Base de données
 
@@ -348,6 +353,8 @@ class MyApp : Application() {
 
 La classe `MyApp` permet de créer une seule instance de `DataRepository` qui sera accessible depuis n'importe quelle activité de l'application.
 
+<div style="page-break-after: always;"></div>
+
 ### 1.4. ViewModel
 
 L'implémentation du `ViewModel` est identique à celle proposée dans la donnée.
@@ -383,6 +390,8 @@ class NotesViewModelFactory(private val repository: DataRepository) : ViewModelP
 ```
 
 Nous utilisons une factory pour instancier le `ViewModel` avec le `Repository` en paramètre.
+
+<div style="page-break-after: always;"></div>
 
 ### 1.5. MainActivity
 
@@ -595,11 +604,11 @@ class NotesDiffCallback(
 
 Dans la méthode `areContentsTheSame`, nous comparons directement les objets `NoteAndSchedule` avec l'opérateur `==` car il s'agit de `data class` et que leurs propriétés sont toutes définies dans le constructeur. En effet, Kotlin génère automatiquement, entre autre, une méthode `equals` qui compare les propriétés définies dans le constructeur des `data class`. Le contructeur de `NoteAndSchedule` contient les propriétés `note` et `schedule` qui sont elles-mêmes des `data class`, permettant ainsi à la comparaison de s'effectuer sur l'entier des propriétés.
 
-## 2. Question complémentaire
+<div style="page-break-after: always;"></div>
 
-### 2.1
+## 2. Questions complémentaires
 
-*Quelle est la meilleure approche pour sauver le choix de l'option de tri de la liste des notes ? Vous justifierez votre réponse et l’illustrez en présentant le code mettant en œuvre votre approche.*
+### 2.1 **Quelle est la meilleure approche pour sauver le choix de l'option de tri de la liste des notes ? Vous justifierez votre réponse et l’illustrez en présentant le code mettant en œuvre votre approche.**
 
 Nous avons décidé de gérer le tri entièrement dans l'adapter c'est à dire au niveau des vues. Avec une telle approche, nous estimons que l'état du tri ne doit pas être stocké dans le `ViewModel` car il est spécifique à la vue. C'est donc au fragment `NotesFragment` de gérer cet état.
 
@@ -657,9 +666,7 @@ companion object {
 }
 ```
 
-### 2.2
-
-*L'accès à la liste des notes issues de la base de données `Room` se fait avec une `LiveData`. Est ce que cette solution présente des limites ? Si oui, quelles sont-elles ? Voyez-vous une autre approche plus adaptée ?*
+### 2.2 **L'accès à la liste des notes issues de la base de données `Room` se fait avec une `LiveData`. Est ce que cette solution présente des limites ? Si oui, quelles sont-elles ? Voyez-vous une autre approche plus adaptée ?**
 
 Oui, cette solution présente des limites. En effet, la requête suivante va charger toutes les données dans la `LiveData` ce qui peut rapidement surcharger la mémoire. Cela n'est donc clairement pas adapté pour des grandes bases de données.
 
@@ -674,9 +681,9 @@ Il serait également possible de paginer les données à l'aide de la librairie 
 
 Au final, la solution à privilégier dépendra du besoin de l'application. Si l'on souhaite afficher toutes les données, il est préférable d'utiliser un `Flow`. Si l'on souhaite afficher une liste paginée, il est préférable d'utiliser la librairie `Paging`. Pour les cas simples comme celui-ci, les `LiveData` sont suffisantes.
 
-### 2.3
+<div style="page-break-after: always;"></div>
 
-*Les notes affichées dans la `RecyclerView` ne sont pas sélectionnables ni cliquables. Comment procéderiez-vous si vous souhaitiez proposer une interface permettant de sélectionner une note pour l’éditer ?*
+### 2.3 **Les notes affichées dans la `RecyclerView` ne sont pas sélectionnables ni cliquables. Comment procéderiez-vous si vous souhaitiez proposer une interface permettant de sélectionner une note pour l’éditer ?**
 
 Il faut ajouter un paramètre au constructeur de l'adapter permettant de passer un callback prenant en paramètre l'élément cliqué:
 
