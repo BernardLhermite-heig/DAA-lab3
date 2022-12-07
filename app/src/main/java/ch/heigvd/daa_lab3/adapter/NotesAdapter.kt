@@ -98,11 +98,11 @@ class NotesAdapter(items: List<NoteAndSchedule> = listOf()) :
     }
 
     inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val typeIcon = view.findViewById<ImageView>(R.id.item_note_icon_type)
-        private val title = view.findViewById<TextView>(R.id.item_note_title)
-        private val content = view.findViewById<TextView>(R.id.item_note_content)
-        private val scheduleIcon = view.findViewById<ImageView>(R.id.item_note_schedule_icon)
-        private val scheduleText = view.findViewById<TextView>(R.id.item_note_schedule_text)
+        private val typeIcon by lazy { view.findViewById<ImageView>(R.id.item_note_icon_type) }
+        private val title by lazy { view.findViewById<TextView>(R.id.item_note_title) }
+        private val content by lazy { view.findViewById<TextView>(R.id.item_note_content) }
+        private val scheduleIcon by lazy { view.findViewById<ImageView>(R.id.item_note_schedule_icon) }
+        private val scheduleText by lazy { view.findViewById<TextView>(R.id.item_note_schedule_text) }
 
         fun bind(noteAndSchedule: NoteAndSchedule) {
             val note = noteAndSchedule.note
